@@ -1,18 +1,20 @@
 const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
-const cors = require("cors");
+// const cors = require("cors");
 
 const router = require("./router");
 const userFunctions = require("./users");
 const { getUser } = require("./users");
 
 const app = express();
-app.use(cors({ origin: "*" }));
+// app.use(cors({ origin: "*" }));
 app.use(router);
-const port = process.env.SERVER_PORT || 5000;
+const port = process.env.PORT || 5000;
 const server = http.createServer(app);
-const io = socketIO(server, { origins: "*:*" });
+const io = socketIO(server);
+// const listenIO = require("socket.io").listen(server);
+// io.set("origins", "*");
 
 io.on("connection", (socket) => {
   socket.on("join", ({ name, room }, callback) => {
@@ -37,13 +39,19 @@ io.on("connection", (socket) => {
     io.to(user.room).emit("message", { user: user.name, text: message });
     // callback();
   });
+  socket.on("masterDelete", () => {
+    const user = userFunctions.getUser(socket.id);
+    io.to(user.room).emit("masterDelete");
+  });
   socket.on("disconnect", () => {
     const user = getUser(socket.id);
-    io.to(user.room).emit("message", {
-      user: "admin",
-      text: `${user.name} has left the room`,
-    });
-    userFunctions.removeUser(socket.id);
+    try {
+      io.to(user.room).emit("message", {
+        user: "admin",
+        text: `${user.name} has left the room`,
+      });
+      userFunctions.removeUser(socket.id);
+    } catch (err) {}
   });
 });
 

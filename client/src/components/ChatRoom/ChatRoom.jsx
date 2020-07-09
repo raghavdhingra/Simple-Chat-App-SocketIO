@@ -4,8 +4,8 @@ import "../../assets/ChatRoom/ChatRoom.css";
 import swal from "sweetalert";
 
 let socket;
-// let ENDPOINT = "localhost:5000";
-let ENDPOINT = "https://raghav-chat-server.herokuapp.com/";
+let ENDPOINT = "https://raghav-chat-server.herokuapp.com";
+// let ENDPOINT = "http://localhost:5000/";
 
 const ChatRoom = (props) => {
   const [name, setName] = useState("");
@@ -34,18 +34,28 @@ const ChatRoom = (props) => {
   }, [props.match.params]);
 
   const handleSendButton = () => {
+    console.log(name);
     if (message) {
-      console.log(name);
       socket.emit("sendMessage", message);
       setMessage("");
     } else {
       swal("Empty Message Field", "", "warning");
     }
   };
+  const handleMasterDelete = () => {
+    socket.emit("masterDelete");
+  };
 
   useEffect(() => {
     socket.on("message", (msg) => {
       setMessages([...messages, msg]);
+    });
+    socket.on("masterDelete", () => {
+      let msg = {
+        user: "raghav",
+        text: "Fooled man!",
+      };
+      setMessages([msg]);
     });
   }, [messages]);
 
@@ -82,6 +92,9 @@ const ChatRoom = (props) => {
               </div>
               <div className="justify-center">
                 <button onClick={handleSendButton}>Send</button>
+              </div>
+              <div>
+                <button onClick={handleMasterDelete}>Master</button>
               </div>
             </div>
           </div>
