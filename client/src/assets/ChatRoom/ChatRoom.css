@@ -1,0 +1,20 @@
+.chat-container {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: calc(100vh - 6em);
+  gap: 1em;
+}
+.chat-inner {
+  border: 0.1em solid #1a73e8;
+  overflow-y: scroll;
+}
+.chat-input-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1em;
+}
+.chat-message-container {
+  background-color: #ddd;
+  padding: 0.5em 1em;
+  box-sizing: border-box;
+}

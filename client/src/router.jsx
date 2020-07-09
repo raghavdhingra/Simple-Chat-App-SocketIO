@@ -11,7 +11,7 @@ class Routes extends Component {
       <>
         <Router>
           <Route exact path="/" component={JoinRoom} />
-          <Route exact path="/room/:room/:name" component={ChatRoom} />
+          <Route exact path="/room=:room/name=:name" component={ChatRoom} />
         </Router>
       </>
     );

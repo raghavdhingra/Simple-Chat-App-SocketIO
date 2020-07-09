@@ -35,7 +35,7 @@ const JoinRoom = () => {
             </div>
             <Link
               onClick={(e) => (!name || !room ? e.preventDefault() : null)}
-              to={`/room/${room}/${name}`}
+              to={`/room=${room}/name=${name}`}
             >
               <button>Join Room</button>
             </Link>
