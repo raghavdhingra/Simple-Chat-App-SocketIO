@@ -1,3 +1,8 @@
+.chat-room-main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1em;
+}
 .chat-container {
   display: grid;
   grid-template-rows: auto 1fr auto;
@@ -6,7 +11,17 @@
 }
 .chat-inner {
   border: 0.1em solid #1a73e8;
-  overflow-y: scroll;
+  overflow-y: auto;
+}
+.p-0-5 {
+  padding: 0.5em;
+}
+.strike-th {
+  cursor: pointer;
+}
+.strike-th:hover {
+  background-color: #eee;
+  text-decoration: line-through;
 }
 .chat-input-grid {
   display: grid;
@@ -17,4 +32,9 @@
   background-color: #ddd;
   padding: 0.5em 1em;
   box-sizing: border-box;
+}
+@media screen and (min-width: 800px) {
+  .chat-room-main-grid {
+    grid-template-columns: 1fr auto;
+  }
 }

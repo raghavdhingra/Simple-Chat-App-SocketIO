@@ -33,16 +33,36 @@ io.on("connection", (socket) => {
       text: `${user.name} has joined the room`,
     });
     socket.join(user.room);
+    setTimeout(() => {
+      let totalMembers = userFunctions.getUsersInRoom(room);
+      io.to(user.room).emit("totalMembers", { totalMembers });
+    }, 50);
   });
+
+  socket.on("removeUser", (id) => {
+    const user = userFunctions.getUser(id);
+    io.to(user.room).emit("message", {
+      user: "admin",
+      text: `${user.name} has been removed by admin`,
+    });
+    io.to(user.id).emit("deleteUser");
+    userFunctions.removeUser(id);
+    let totalMembers = userFunctions.getUsersInRoom(user.room);
+    io.to(user.room).emit("totalMembers", { totalMembers });
+  });
+
   socket.on("sendMessage", (message) => {
-    const user = userFunctions.getUser(socket.id);
-    io.to(user.room).emit("message", { user: user.name, text: message });
-    // callback();
+    try {
+      const user = userFunctions.getUser(socket.id);
+      io.to(user.room).emit("message", { user: user.name, text: message });
+    } catch (err) {}
   });
+
   socket.on("masterDelete", () => {
     const user = userFunctions.getUser(socket.id);
     io.to(user.room).emit("masterDelete");
   });
+
   socket.on("disconnect", () => {
     const user = getUser(socket.id);
     try {
@@ -51,6 +71,8 @@ io.on("connection", (socket) => {
         text: `${user.name} has left the room`,
       });
       userFunctions.removeUser(socket.id);
+      let totalMembers = userFunctions.getUsersInRoom(user.room);
+      io.to(user.room).emit("totalMembers", { totalMembers });
     } catch (err) {}
   });
 });
